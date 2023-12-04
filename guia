@@ -1,0 +1,21 @@
+GUIA PROYECTO POO:
+
+Java puro:
+
+- Agregar productos Supermercado
+- Pulir detalles de usuarios, pedidos JSON
+- Migrar base de datos a MySQL 
+- Arreglar pruebas unitarias
+- Integrar función para realizar peticiones
+
+
+Spring Boot:
+
+- > Contruir proyecto SpringCart
+- Pulir detalles de usuarios, carrito y pedidos
+- Agregar todos los Endpoints
+
+Final:
+
+- Validar que funcionan las peticiones en ambos entornos de proyectos
+- Hacer PPT Presentación e informe
