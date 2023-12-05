@@ -13,7 +13,7 @@ public class IConsola {
 
 
     public static void mostrarMenuPrincipal(ArrayList<Producto> productos) {
-        mostrarTitulo("BIENVENIDO A LA TIENDA HARD-TECH !");
+        mostrarTitulo("BIENVENIDO AL MINIMARKET SPRING-CART !");
         int selec = validarEntero("SELECCIONE UNA OPCIÓN...\n1) Ver todos los productos\n2) Buscar producto por nombre\n3) Buscar productos por categoria\n4) Ver carrito", 4);
 
         switch (selec){
@@ -344,8 +344,8 @@ public class IConsola {
     public static void mostrarProductos(ArrayList<Producto> productos){
 
 
-        String borde = "+-----------------+----------------------+--------------+%n";
-        String formato = "| %-15s | %-20s | %-12s |%n";
+        String borde = "+----------------------+-------------------------------------+--------------+%n";
+        String formato = "| %-20s | %-35s | %-12s |%n";
 
         System.out.println();
         System.out.println("LISTADO DE PRODUCTOS:");
@@ -354,7 +354,7 @@ public class IConsola {
 
         for (int i = 0; i < productos.size(); i++) {
             System.out.format(borde);
-            System.out.format(formato, (i+1) + ") " + GestorProductos.getMarcas().get(productos.get(i).getMarca_id()-1), productos.get(i).getModelo(), productos.get(i).getPrecio());
+            System.out.format(formato, (i+1) + ") " + GestorProductos.getMarcas().get(productos.get(i).getMarca_id()-1), productos.get(i).getModelo(), "$ " + productos.get(i).getPrecio());
         }
         System.out.format(borde, "");
     }

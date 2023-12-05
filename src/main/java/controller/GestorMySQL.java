@@ -1,22 +1,41 @@
 package controller;
 
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.*;
 import java.util.Collection;
 import java.util.HashMap;
+import java.io.BufferedReader;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.List;
 
 public class GestorMySQL {
 
     private static Connection connection = null;
     private static Statement statement = null;
-    private static String url = "jdbc:mysql://localhost:3306/spring_cart";
+    private static String database = "spring_cart";
+    private static String url = "jdbc:mysql://localhost:3306/" + database;
     private static String usuario = "root";
     private static String contraseña = "";
+
+    static {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            System.err.println("Error al cargar el controlador JDBC: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
 
     public static void ActualizarConexion() {
         try {
             connection = DriverManager.getConnection(url, usuario, contraseña);
             statement = connection.createStatement();
         } catch (SQLException e) {
+            System.err.println("Error al conectar a la base de datos: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -26,9 +45,63 @@ public class GestorMySQL {
             ActualizarConexion();
             statement.execute(sentenciaSQL);
         } catch (SQLException e) {
+            System.err.println("Error al ejecutar la consulta SQL: " + e.getMessage());
             e.printStackTrace();
         }
     }
+
+    public static void precargarSQL(String nombreArchivo) {
+        try {
+            String rutaArchivo = "src/main/java/database/" + nombreArchivo;
+
+            try (BufferedReader reader = new BufferedReader(new FileReader(rutaArchivo))) {
+                StringBuilder scriptBuilder = new StringBuilder();
+                String linea;
+
+                while ((linea = reader.readLine()) != null) {
+                    // Concatenar cada línea al StringBuilder
+                    scriptBuilder.append(linea).append("\n");
+
+                    // Si la línea termina con punto y coma, ejecutar la declaración
+                    if (linea.trim().endsWith(";")) {
+                        ejecutarSQL(scriptBuilder.toString());
+                        scriptBuilder = new StringBuilder();  // Reiniciar el StringBuilder
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static boolean existeBaseDatos() {
+        try {
+            String sql = "SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, database);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            return resultSet.next(); // Si hay resultados, la base de datos existe
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false; // En caso de error, asumimos que la base de datos no existe
+        }
+    }
+
+    public static void crearBaseDatos() {
+        try {
+            String sql = "CREATE DATABASE " + database;
+            Statement statement = connection.createStatement();
+            statement.executeUpdate(sql);
+            System.out.println("Base de datos creada: " + database);
+        } catch (SQLException e) {
+            System.err.println("Error al crear la base de datos: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
 
     // CRUD
     public static void insertarRegistro(String tabla, HashMap<String, String> nombre_valor) {
