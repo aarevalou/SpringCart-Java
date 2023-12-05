@@ -1,6 +1,6 @@
 package models;
 
-import controller.GestorProductos;
+import services.GestorProductos;
 
 import java.util.Scanner;
 
@@ -20,10 +20,10 @@ public class Admin extends Usuario {
     public Admin(){}
 
     public Admin(Usuario usuario){
-        super(usuario.getRut(), usuario.getNombre(), usuario.getEmail(), usuario.getPassword(), usuario.getImagen(), usuario.getDireccion());
+        super(usuario.getId(), usuario.getRut(), usuario.getNombre(), usuario.getEmail(), usuario.getPassword(), usuario.getDireccion());
     }
-    public Admin(String rut, String nombre, String email, String password, String direccion, String imagen, String cargo, String fechaIngreso) {
-        super(rut, nombre, email, password, imagen, direccion);
+    public Admin(int id, String rut, String nombre, String email, String password, String direccion, String cargo, String fechaIngreso) {
+        super(id, rut, nombre, email, password, direccion);
         this.cargo = cargo;
         this.fecha_ingreso = fechaIngreso;
     }
@@ -93,16 +93,6 @@ public class Admin extends Usuario {
     }
 
     @Override
-    public String getImagen() {
-        return super.getImagen();
-    }
-
-    @Override
-    public void setImagen(String imagen) {
-        super.setImagen(imagen);
-    }
-
-    @Override
     public String getDireccion() {
         return super.getDireccion();
     }
@@ -138,7 +128,7 @@ public class Admin extends Usuario {
         System.out.println("Ingrese Marca del producto:");
         p.setMarca_id(scanner.nextInt());
         System.out.println("Ingrese Modelo del producto:");
-        p.setModelo(scanner.nextLine());
+        p.setDetalle(scanner.nextLine());
         System.out.println("Ingrese Precio del producto:");
         p.setPrecio(Integer.parseInt(scanner.nextLine()));
         System.out.println("Ingrese Stock del producto:");

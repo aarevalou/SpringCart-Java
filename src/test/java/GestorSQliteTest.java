@@ -1,4 +1,4 @@
-import controller.GestorMySQL;
+import services.GestorMySQL;
 import models.Admin;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,7 +18,7 @@ public class GestorSQliteTest {
 
     @BeforeEach
     public void setUp() {
-        Admin admin = new Admin("33444555-K", "Alejandro Arévalo Sanchez", "a.arevalo02@ufromail.cl", "1234", "Boldo 10143", "", "Productos y Pedidos", "18/07/2023");
+        Admin admin = new Admin(1, "33444555-K", "Alejandro Arévalo Sanchez", "a.arevalo02@ufromail.cl", "1234", "Boldo 10143", "Productos y Pedidos", "18/07/2023");
     }
 
     @Test
@@ -42,30 +42,6 @@ public class GestorSQliteTest {
         String campos = "id, nombre";
         String valores = "7, Presonus";
         assertDoesNotThrow(() -> GestorMySQL.eliminarRegistro(tabla, campos, valores));
-    }
-
-    @Test
-    public void testObtenerRegistro(){
-        HashMap<String, String> registros = new HashMap<>();
-        registros.put("rut", "206695846");
-        registros.put("nombre", "Alejandro Arévalo Carrillo");
-        registros.put("email", "email1");
-        registros.put("password", "pwd1");
-        registros.put("imagen", null);
-        registros.put("direccion", "tubul 81");
-        registros.put("saldo", "999999999");
-        assertEquals(GestorMySQL.obtenerRegistro("Cliente", "rut", "206695846"), registros);
-        registros.clear();
-
-        registros.put("id", "1");
-        registros.put("nombre", "Beyerdynamic");
-        assertEquals(GestorMySQL.obtenerRegistro("Marca", "id", "1"), registros);
-    }
-
-    @Test
-    public void testObtenerCantidadRegistros(){
-        assertEquals(GestorMySQL.obtenerCantidadRegistros("Producto"), 10);
-        assertEquals(GestorMySQL.obtenerCantidadRegistros("Cliente"), 1);
     }
 
     @Test

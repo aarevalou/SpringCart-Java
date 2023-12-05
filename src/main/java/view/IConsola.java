@@ -1,14 +1,8 @@
 package view;
-import controller.GestorObjeto;
-import controller.GestorProductos;
-import controller.GestorMySQL;
-import controller.GestorUsuarios;
-import models.*;
-
-import java.util.*;
 
 public class IConsola {
 
+    /*
     private static Scanner scanner = new Scanner(System.in);
 
 
@@ -70,7 +64,7 @@ public class IConsola {
         claves.addAll(producto.getAtributos().keySet());
 
         System.out.println(" - " + "Marca: " + producto.getMarca_id());
-        System.out.println(" - " + "Modelo: " + producto.getModelo());
+        System.out.println(" - " + "Modelo: " + producto.getDetalle());
 
         for (int i = 0; i < claves.size(); i++) {
             System.out.println(" - " + claves.get(i) + ": " + producto.getAtributos().get(claves.get(i)));
@@ -226,7 +220,7 @@ public class IConsola {
         return total;
     }
 
-    /*public static void mostrarMenuCarrito(Carrito carrito) {
+    public static void mostrarMenuCarrito(Carrito carrito) {
         int selec=0;
         listarCarrito(carrito.getProductos().keySet());
         if(carrito.getProductos().size() > 0){
@@ -291,7 +285,7 @@ public class IConsola {
         if(selec==4){
             mostrarMenuPrincipal(GestorProductos.getProductos());
         }
-    }*/
+    }
 
     private static void mostrarDatos(Object objeto) {
         HashMap<String, String> atributosValores = GestorObjeto.obtenerAtributosObjeto(objeto);
@@ -354,7 +348,7 @@ public class IConsola {
 
         for (int i = 0; i < productos.size(); i++) {
             System.out.format(borde);
-            System.out.format(formato, (i+1) + ") " + GestorProductos.getMarcas().get(productos.get(i).getMarca_id()-1), productos.get(i).getModelo(), "$ " + productos.get(i).getPrecio());
+            System.out.format(formato, (i+1) + ") " + GestorProductos.getMarcas().get(productos.get(i).getMarca_id()-1), productos.get(i).getDetalle(), "$ " + productos.get(i).getPrecio());
         }
         System.out.format(borde, "");
     }
@@ -435,7 +429,7 @@ public class IConsola {
         Producto p = new Producto();
 
         p.setMarca_id(marca_id);
-        p.setModelo(modelo);
+        p.setDetalle(modelo);
         p.setCategoria_id(categoria);
         p.setStock(stock);
         p.setPrecio(precio);
@@ -495,7 +489,7 @@ public class IConsola {
 
         Producto p = GestorProductos.getProductos().get(indice-1);
         p.setMarca_id(marca_id);
-        p.setModelo(modelo);
+        p.setDetalle(modelo);
         p.setCategoria_id(categoria);
         p.setStock(stock);
         p.setPrecio(precio);
@@ -673,5 +667,8 @@ public class IConsola {
         }
         return rut;
     }
+
+
+     */
 }
 

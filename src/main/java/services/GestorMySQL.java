@@ -1,4 +1,4 @@
-package controller;
+package services;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -10,14 +10,13 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.List;
 
 public class GestorMySQL {
 
     private static Connection connection = null;
     private static Statement statement = null;
     private static String database = "spring_cart";
-    private static String url = "jdbc:mysql://localhost:3306/" + database;
+    private static String url = "jdbc:mysql://localhost:3306/" + database + "?createDatabaseIfNotExist=true";
     private static String usuario = "root";
     private static String contraseña = "";
 
@@ -40,6 +39,8 @@ public class GestorMySQL {
         }
     }
 
+
+
     public static void ejecutarSQL(String sentenciaSQL) {
         try {
             ActualizarConexion();
@@ -59,13 +60,11 @@ public class GestorMySQL {
                 String linea;
 
                 while ((linea = reader.readLine()) != null) {
-                    // Concatenar cada línea al StringBuilder
                     scriptBuilder.append(linea).append("\n");
 
-                    // Si la línea termina con punto y coma, ejecutar la declaración
                     if (linea.trim().endsWith(";")) {
                         ejecutarSQL(scriptBuilder.toString());
-                        scriptBuilder = new StringBuilder();  // Reiniciar el StringBuilder
+                        scriptBuilder = new StringBuilder();
                     }
                 }
             } catch (IOException e) {
@@ -76,17 +75,17 @@ public class GestorMySQL {
         }
     }
 
-    public static boolean existeBaseDatos() {
+    public static boolean verificarExistencia() {
         try {
-            String sql = "SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = ?";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, database);
+            String sql = "SHOW TABLES";
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
 
-            ResultSet resultSet = preparedStatement.executeQuery();
-            return resultSet.next(); // Si hay resultados, la base de datos existe
+            return resultSet.next();
+
         } catch (SQLException e) {
             e.printStackTrace();
-            return false; // En caso de error, asumimos que la base de datos no existe
+            return false;
         }
     }
 
@@ -142,11 +141,43 @@ public class GestorMySQL {
     }
 
     public static void modificarRegistro(String tabla, HashMap<String, String> nombre_valor) {
-        String atributos = concatenarCampos(nombre_valor.keySet());
-        String valores = concatenarCampos(nombre_valor.values());
-        String update = "UPDATE " + tabla + " SET " + atributos + " = " + valores + formarCondicionalWhere(nombre_valor.keySet().iterator().next(), nombre_valor.values().iterator().next());
-        ejecutarSQL(update);
+        try {
+            StringBuilder setClause = new StringBuilder();
+            for (HashMap.Entry<String, String> entry : nombre_valor.entrySet()) {
+                String columnName = entry.getKey();
+
+                // Excluir 'id' de la actualización
+                if ("id".equals(columnName)) {
+                    continue;
+                }
+
+                setClause.append(columnName).append(" = ");
+                try {
+                    int valorInt = Integer.parseInt(entry.getValue());
+                    setClause.append(valorInt);
+                } catch (NumberFormatException e) {
+                    setClause.append("'").append(entry.getValue()).append("'");
+                }
+                setClause.append(", ");
+            }
+            setClause.delete(setClause.length() - 2, setClause.length());
+
+            String update = "UPDATE " + tabla + " SET " + setClause.toString() + " WHERE id = " + nombre_valor.get("id");
+
+            // Imprime la sentencia SQL generada
+            System.out.println("Sentencia SQL para la actualización: " + update);
+
+            // Ejecutar la sentencia SQL
+            ejecutarSQL(update);
+            System.out.println("Producto actualizado exitosamente");
+        } catch (Exception e) {
+            // Manejar excepciones y registra mensajes de error
+            e.printStackTrace();
+            System.err.println("Error al actualizar el producto: " + e.getMessage());
+        }
     }
+
+
 
     // Utilidades
 

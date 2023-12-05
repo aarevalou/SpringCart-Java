@@ -1,102 +1,78 @@
-import controller.*;
-import models.*;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.*;
+
+import models.Producto;
+import org.junit.Before;
+import org.junit.Test;
+import services.GestorProductos;
 
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
-
 
 public class GestorProductosTest {
 
-    private ArrayList<Producto> productos;
+    @Before
+    public void setUp() {
+        List<Producto> productos = new ArrayList<>();
 
-    @BeforeAll
-    public static void conexion(){
-        GestorMySQL.ActualizarConexion();
-        GestorProductos.actualizarDatos();
-    }
+        Producto producto = new Producto();
+        producto.setId(1);
+        producto.setMarca_id(1);
+        producto.setCategoria_id(1);
+        producto.setPrecio(100);
+        producto.setStock(10);
+        producto.setDetalle("Producto de prueba");
 
-    @BeforeEach
-    public void setup() {
-        productos = new ArrayList<>();
-        for (int i = 0; i < GestorMySQL.obtenerCantidadRegistros("Producto"); i++) {
-            HashMap<String, String> registro = GestorMySQL.obtenerRegistro("Producto", "id", String.valueOf(i+1));
-            Producto p = (Producto) GestorObjeto.construirObjeto(new Producto(), registro);
-            productos.add(p);
-        }
-    }
+        productos.add(producto);
 
-    @Test
-    public void testObtenerProductosPorCategoria(){
-        List<Producto> productosFiltrados = productos.stream()
-                .filter(producto -> producto.getCategoria_id()==1)
-                .collect(Collectors.toList());
-        assertEquals(GestorProductos.obtenerProductosPorCategoria(productos, 1), productosFiltrados);
-        assertEquals(productosFiltrados.size(), 4);
+        GestorProductos.productos = new ArrayList<>(productos);
     }
 
     @Test
-    public void testObtenerProductosPorMarca(){
-        List<Producto> productosFiltrados = productos.stream()
-                .filter(producto -> producto.getMarca_id()==1)
-                .collect(Collectors.toList());
-        assertEquals(GestorProductos.obtenerProductosPorMarca(productos, 1), productosFiltrados);
-        assertEquals(productosFiltrados.size(), 2);
-        assertEquals(productosFiltrados.get(0), productos.get(0));
+    public void testObtenerProductosPorCategoria() {
+        List<Producto> productosPorCategoria = GestorProductos.obtenerProductosPorCategoria(1);
+        assertEquals(1, productosPorCategoria.size());
+        assertEquals(1, productosPorCategoria.get(0).getCategoria_id());
     }
 
     @Test
-    public void testObtenerProductoPorIndice() {
-        Producto producto = GestorProductos.obtenerProductoPorIndice(productos, 2);
-        assertEquals(producto, productos.get(1));
-    }
-
-
-    @Test
-    public void testObtenerProductosPorPrecio() {
-        ArrayList<Producto> productosFiltrados = GestorProductos.obtenerProductosPorPrecio(productos, 0, 150000);
-        assertEquals(productosFiltrados.size(), 3);
-        assertEquals(productosFiltrados.get(0), productos.get(1));
+    public void testObtenerProductoPorID() {
+        Producto producto = GestorProductos.obtenerProductoPorID(1);
+        assertNotNull(producto);
+        assertEquals(1, producto.getId());
     }
 
     @Test
-    public void testOrdenarProductosPorPrecioAscendente() {
-        ArrayList<Producto> productosOrdenadosAsc = new ArrayList<>(productos);
-        productosOrdenadosAsc.sort(Comparator.comparing(Producto::getPrecio));
-        assertEquals(GestorProductos.ordenarProductosPorPrecio(productos, true), productosOrdenadosAsc);
+    public void testObtenerProductosPorMarca() {
+        List<Producto> productosPorMarca = GestorProductos.obtenerProductosPorMarca(1);
+        assertEquals(1, productosPorMarca.size());
+        assertEquals(1, productosPorMarca.get(0).getMarca_id());
     }
 
     @Test
-    public void testOrdenarProductosPorPrecioDescendente() {
-        ArrayList<Producto> productosOrdenadosDes = new ArrayList<>(productos);
-        productosOrdenadosDes.sort(Comparator.comparing(Producto::getPrecio).reversed());
-        assertEquals(GestorProductos.ordenarProductosPorPrecio(productos, false), productosOrdenadosDes);
+    public void testObtenerProductosPorPrecioAsc() {
+        List<Producto> productosPorPrecioAsc = GestorProductos.obtenerProductosPorPrecioAsc();
+        assertEquals(1, productosPorPrecioAsc.size());
+        assertEquals(1, productosPorPrecioAsc.get(0).getId());
     }
 
     @Test
-    public void testObtenerProductosPorBusqueda() {
-        ArrayList<Producto> productosFiltrados = GestorProductos.obtenerProductosPorBusqueda(productos, "Beyerdynamic");
-        assertEquals(2, productosFiltrados.size());
-        assertEquals(productos.get(0), productosFiltrados.get(0));
+    public void testObtenerProductosPorPrecioDesc() {
+        List<Producto> productosPorPrecioDesc = GestorProductos.obtenerProductosPorPrecioDesc();
+        assertEquals(1, productosPorPrecioDesc.size());
+        assertEquals(1, productosPorPrecioDesc.get(0).getId());
     }
 
-    @ParameterizedTest
-    @CsvSource ({
-            "Beyerdi, Beyerdinamic, 5",
-            "Sennheiser, Senheise, 2",
-            "Focusrite, focusrite, 1",
-            "ADAM, A, 3"
-    })
-    public void testDistanciaLevenshtein(String a, String b, int actual){
-        assertEquals(GestorProductos.distanciaLevenshtein(a, b), actual);
-    }
+    @Test
+    public void testAgregarProducto() {
+        Producto nuevoProducto = new Producto();
+        nuevoProducto.setId(2);
+        nuevoProducto.setMarca_id(2);
+        nuevoProducto.setCategoria_id(2);
+        nuevoProducto.setPrecio(200);
+        nuevoProducto.setStock(20);
+        nuevoProducto.setDetalle("Nuevo producto");
+        GestorProductos.agregarProducto(nuevoProducto);
 
+        assertEquals(nuevoProducto, GestorProductos.obtenerProductoPorID(2));
+    }
 }

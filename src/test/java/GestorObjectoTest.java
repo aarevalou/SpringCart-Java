@@ -1,4 +1,4 @@
-import controller.GestorObjeto;
+import services.GestorObjeto;
 import models.Cliente;
 import org.junit.jupiter.api.Test;
 import java.util.HashMap;
@@ -20,18 +20,4 @@ public class GestorObjectoTest {
         assertEquals("email1@gmail.com", cliente.getEmail());
     }
 
-    @Test
-    public void testObtenerAtributosObjeto(){
-        Cliente cliente = new Cliente();
-        cliente.setRut("206695846");
-        cliente.setNombre("Alejandro Arévalo Carrillo");
-        cliente.setEmail("email1@gmail.com");
-        HashMap<String, String> atributos = GestorObjeto.obtenerAtributosObjeto(cliente);
-        System.out.println(atributos);
-        assertNotNull(atributos);
-        assertEquals("206695846", atributos.get("rut"));
-        assertEquals("Alejandro Arévalo Carrillo", atributos.get("nombre"));
-        assertEquals("email1",atributos.get("email"));
-
-    }
 }

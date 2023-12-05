@@ -2,23 +2,29 @@ package models;
 
 public abstract class Usuario {
 
+
+    private int id;
     private String rut;
     private String nombre;
     private String email;
     private String password;
     private String direccion;
-    private String imagen;
 
-    public Usuario(){}
-
-    public Usuario(String rut, String nombre, String email, String password, String imagen, String direccion) {
+    public Usuario(int id, String rut, String nombre, String email, String password, String direccion) {
+        this.id = id;
         this.rut = rut;
         this.nombre = nombre;
         this.email = email;
         this.password = password;
-        this.imagen = imagen;
         this.direccion = direccion;
     }
+
+    public Usuario(){}
+
+
+    public int getId() {return id; }
+
+    public void setId(int id) { this.id = id; }
 
     public String getRut() {
         return rut;
@@ -53,15 +59,6 @@ public abstract class Usuario {
     }
 
 
-
-    public String getImagen() {
-        return imagen;
-    }
-
-    public void setImagen(String imagen) {
-        this.imagen = imagen;
-    }
-
     public String getDireccion() {
         return direccion;
     }
@@ -70,8 +67,7 @@ public abstract class Usuario {
         this.direccion = direccion;
     }
 
-    public void iniciarSesion(){}
-    public void crearCuenta(){}
+
     public boolean verificarLogin(String email, String password){
 
         if(this.email.equals(email) && this.password.equals(password)){

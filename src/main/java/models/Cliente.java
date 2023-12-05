@@ -16,11 +16,11 @@ public class Cliente extends Usuario {
     public Cliente(){}
 
     public Cliente(Usuario usuario){
-        super(usuario.getRut(), usuario.getNombre(), usuario.getEmail(), usuario.getPassword(), usuario.getImagen(), usuario.getDireccion());
+        super(usuario.getId(), usuario.getRut(), usuario.getNombre(), usuario.getEmail(), usuario.getPassword(), usuario.getDireccion());
     }
 
-    public Cliente(String rut, String nonbre, String email, String password, String imagen, String direccion, int saldo) {
-        super(rut, nonbre, email, password, imagen, direccion);
+    public Cliente(int id, String rut, String nonbre, String email, String password, String imagen, String direccion, int saldo) {
+        super(id, rut, nonbre, email, password, imagen);
         this.direccion = direccion;
         this.saldo = saldo;
     }
@@ -126,16 +126,6 @@ public class Cliente extends Usuario {
     @Override
     public void setPassword(String password) {
         super.setPassword(password);
-    }
-
-    @Override
-    public String getImagen() {
-        return super.getImagen();
-    }
-
-    @Override
-    public void setImagen(String imagen) {
-        super.setImagen(imagen);
     }
 
     @Override
